@@ -1,9 +1,10 @@
-import MuiButoon from "@mui/material/Button";
+import MuiButton from "@mui/material/Button";
+
 export default function Button(props) {
-  const { variant = "contained", color = "primary", children } = props;
+  const { variant = "contained", color = "primary", children, ...rest } = props;
   return (
-    <MuiButoon variant={variant} color={color}>
+    <MuiButton variant={variant} color={color} {...rest}>
       {children}
-    </MuiButoon>
+    </MuiButton>
   );
 }

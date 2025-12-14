@@ -4,7 +4,7 @@ import TaskItem from "../TaskItem/TaskItem.jsx";
 import { mockTasks } from "../../../data/mockTasks";
 import { Button } from "../../common/Button";
 import { Modal } from "../../common/Modal";
-import TaskForm from "../TaskForm/TaskForm.jsx";
+import { TaskForm } from "../TaskForm";
 
 export default function TaskList() {
   const [tasks, setTasks] = useState(mockTasks);
@@ -14,12 +14,13 @@ export default function TaskList() {
   const handleCloseModal = () => setIsModalOpen(false);
 
   const handleToggleComplete = (taskId) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
+    setTasks((prevTasks) => {
+      const newTasks = prevTasks.map((task) =>
         task.id === taskId ? { ...task, completed: !task.completed } : task
-      )
-    );
-    console.log(tasks);
+      );
+      console.log(newTasks);
+      return newTasks;
+    });
   };
 
   const pendingTasksCount = tasks.filter((t) => !t.completed).length;

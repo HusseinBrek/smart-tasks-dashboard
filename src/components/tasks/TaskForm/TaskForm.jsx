@@ -4,12 +4,12 @@ import { useState } from "react";
 import { Box } from "@mui/material";
 import { MenuItem } from "@mui/material";
 
-export default function TaskForm() {
+export default function TaskForm({ handleClose }) {
   const initialFormState = {
     title: "",
     description: "",
     dueDate: "",
-    priority: "Medium",
+    priority: "medium",
   };
   const [formData, setFormData] = useState(initialFormState);
 
@@ -20,13 +20,17 @@ export default function TaskForm() {
       [name]: value,
     }));
   };
-  const handleClose = () => {
-    setFormData(initialFormState);
+  const resetForm = () => setFormData(initialFormState);
+  const handleCancel = () => {
+    resetForm();
+    if (handleClose) handleClose();
   };
+
   const handleSubmit = (event) => {
     event.preventDefault();
     console.log(formData);
-    handleClose();
+    resetForm();
+    if (handleClose) handleClose();
   };
 
   return (
@@ -63,7 +67,7 @@ export default function TaskForm() {
         onChange={handleChange}
       />
       <Box>
-        <Button variant="outlined" color="secondary" onClick={handleClose}>
+        <Button variant="outlined" color="secondary" onClick={handleCancel}>
           Cancel
         </Button>
         <Button type="submit" variant="contained">
