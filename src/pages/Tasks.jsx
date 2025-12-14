@@ -1,11 +1,11 @@
 import { Box, Typography } from "@mui/material";
-import TaskList from "../components/tasks/TaskList/TaskList";
+import TaskList from "../../src/components/tasks/TaskList/TaskList.jsx";
 
-export default function Dashboard() {
+export default function Tasks() {
   return (
     <Box>
       <Typography variant="h4" gutterBottom>
-        Dashboard Overview
+        All Tasks Management
       </Typography>
       <TaskList />
     </Box>
