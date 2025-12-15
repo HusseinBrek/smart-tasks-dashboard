@@ -1,1 +1,1 @@
-export { default as Card } from "./Card.jsx";
+export { default as BasicCard } from "./Card.jsx";

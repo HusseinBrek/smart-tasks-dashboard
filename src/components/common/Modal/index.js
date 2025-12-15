@@ -1,1 +1,1 @@
-export { default as Modal } from "./Modal.jsx";
+export { default as ChildModal } from "./ChildModal.jsx";

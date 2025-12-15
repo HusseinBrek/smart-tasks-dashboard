@@ -1,4 +1,4 @@
-import { TextField } from "@mui/material";
+import { TextField, MenuItem } from "@mui/material";
 
 export default function Input(props) {
   const {
@@ -6,6 +6,8 @@ export default function Input(props) {
     fullWidth = true,
     margin = "normal",
     label,
+    select,
+    children,
     ...rest
   } = props;
 
@@ -15,7 +17,10 @@ export default function Input(props) {
       fullWidth={fullWidth}
       margin={margin}
       label={label}
+      select={select}
       {...rest}
-    />
+    >
+      {select ? children : null}
+    </TextField>
   );
 }

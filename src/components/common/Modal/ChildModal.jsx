@@ -1,5 +1,6 @@
-import { Modal as MuiModal, Box, Typography, IconButton } from "@mui/material";
+import { Box, Typography, IconButton } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
+import Modal from "@mui/material/Modal";
 
 const style = {
   position: "absolute",
@@ -13,9 +14,9 @@ const style = {
   borderRadius: 1,
 };
 
-export default function Modal({ open, handleClose, title, children }) {
+export default function ChildModal({ open, handleClose, title, children }) {
   return (
-    <MuiModal
+    <Modal
       open={open}
       onClose={handleClose}
       aria-labelledby="modal-title"
@@ -39,6 +40,6 @@ export default function Modal({ open, handleClose, title, children }) {
         </Box>
         {children}
       </Box>
-    </MuiModal>
+    </Modal>
   );
 }

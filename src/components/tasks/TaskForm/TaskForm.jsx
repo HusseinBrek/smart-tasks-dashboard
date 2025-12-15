@@ -1,46 +1,51 @@
+import { useState } from "react";
+import { Box, MenuItem } from "@mui/material";
 import { Button } from "../../common/Button";
 import { Input } from "../../common/Input";
-import { useState } from "react";
-import { Box } from "@mui/material";
-import { MenuItem } from "@mui/material";
 
-export default function TaskForm({ handleClose }) {
-  const initialFormState = {
+export default function TaskForm({ handleClose, taskToEdit = null, onSave }) {
+  const initialData = taskToEdit || {
     title: "",
     description: "",
     dueDate: "",
     priority: "medium",
   };
-  const [formData, setFormData] = useState(initialFormState);
 
-  const handleChange = (event) => {
-    const { name, value } = event.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-  const resetForm = () => setFormData(initialFormState);
-  const handleCancel = () => {
-    resetForm();
-    if (handleClose) handleClose();
+  const [formData, setFormData] = useState(initialData);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (event) => {
-    event.preventDefault();
-    console.log(formData);
-    resetForm();
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!formData.title.trim()) {
+      alert("Please enter a task title");
+      return;
+    }
+
+    if (onSave) onSave(formData);
+
+    setFormData({
+      title: "",
+      description: "",
+      dueDate: "",
+      priority: "medium",
+    });
     if (handleClose) handleClose();
   };
 
   return (
-    <Box component="form" onSubmit={handleSubmit}>
+    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
       <Input
-        label="Task Name"
+        label="Task Title *"
         name="title"
         value={formData.title}
         onChange={handleChange}
       />
+
       <Input
         label="Task Description"
         name="description"
@@ -49,6 +54,7 @@ export default function TaskForm({ handleClose }) {
         multiline
         rows={4}
       />
+
       <Input
         label="Task Priority"
         name="priority"
@@ -60,18 +66,21 @@ export default function TaskForm({ handleClose }) {
         <MenuItem value="medium">Medium</MenuItem>
         <MenuItem value="low">Low</MenuItem>
       </Input>
+
       <Input
-        label="Task Due Date"
+        label="Due Date"
         name="dueDate"
+        type="date"
         value={formData.dueDate}
         onChange={handleChange}
       />
-      <Box>
-        <Button variant="outlined" color="secondary" onClick={handleCancel}>
+
+      <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mt: 3 }}>
+        <Button variant="outlined" onClick={handleClose}>
           Cancel
         </Button>
         <Button type="submit" variant="contained">
-          Save
+          {taskToEdit ? "Update Task" : "Save Task"}
         </Button>
       </Box>
     </Box>

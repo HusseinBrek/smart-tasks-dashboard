@@ -21,7 +21,7 @@ export const mockTasks = [
     description: "This is the third task",
     dueDate: "2023-04-03",
     priority: "low",
-    completed: false,
+    completed: true,
   },
   {
     id: 4,
@@ -37,6 +37,6 @@ export const mockTasks = [
     description: "This is the fifth task",
     dueDate: "2023-04-05",
     priority: "medium",
-    completed: false,
+    completed: true,
   },
 ];
