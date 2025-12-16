@@ -4,6 +4,8 @@ import SearchIcon from "@mui/icons-material/Search";
 import InputBase from "@mui/material/InputBase";
 import AccountCircle from "@mui/icons-material/AccountCircle";
 import Box from "@mui/material/Box";
+import { Button } from "../common/Button";
+import { Link as RouterLink } from "react-router-dom";
 
 export default function Header() {
   return (
@@ -54,9 +56,18 @@ export default function Header() {
             sx={{ color: "inherit", pl: "32px", pr: "8px" }}
           />
         </Box>
-        <IconButton color="inherit">
-          <AccountCircle />
-        </IconButton>
+        <Button
+          component={RouterLink}
+          to="/login"
+          color="inherit"
+          startIcon={<AccountCircle />}
+          sx={{
+            textTransform: "none",
+            fontWeight: 500,
+          }}
+        >
+          Sign In
+        </Button>
       </Toolbar>
     </AppBar>
   );

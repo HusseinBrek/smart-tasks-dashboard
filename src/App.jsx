@@ -5,6 +5,7 @@ import { Tasks } from "./pages/Tasks";
 import { Settings } from "./pages/Settings";
 import Layout from "./components/layout/Layout";
 import { TasksProvider } from "./context/TasksProvider";
+import { Login } from "./pages/Login";
 
 const theme = createTheme({});
 
@@ -18,6 +19,7 @@ function App() {
             <Route index element={<Dashboard />} />
             <Route path="tasks" element={<Tasks />} />
             <Route path="settings" element={<Settings />} />
+            <Route path="login" element={<Login />} />
           </Route>
         </Routes>
       </TasksProvider>
