@@ -1,0 +1,42 @@
+export const mockTasks = [
+  {
+    id: 1,
+    title: "Task 1",
+    description: "This is the first task",
+    dueDate: "2023-04-01",
+    priority: "high",
+    completed: false,
+  },
+  {
+    id: 2,
+    title: "Task 2",
+    description: "This is the second task",
+    dueDate: "2023-04-02",
+    priority: "medium",
+    completed: false,
+  },
+  {
+    id: 3,
+    title: "Task 3",
+    description: "This is the third task",
+    dueDate: "2023-04-03",
+    priority: "low",
+    completed: true,
+  },
+  {
+    id: 4,
+    title: "Task 4",
+    description: "This is the fourth task",
+    dueDate: "2023-04-04",
+    priority: "high",
+    completed: false,
+  },
+  {
+    id: 5,
+    title: "Task 5",
+    description: "This is the fifth task",
+    dueDate: "2023-04-05",
+    priority: "medium",
+    completed: true,
+  },
+];

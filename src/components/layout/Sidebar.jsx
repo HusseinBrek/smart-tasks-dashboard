@@ -11,17 +11,18 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ChecklistIcon from "@mui/icons-material/Checklist";
 import NotificationsIcon from "@mui/icons-material/Notifications";
+import { Link } from "react-router-dom";
 
 const navItems = [
-  { text: "Dashboard", icon: <DashboardIcon /> },
+  { text: "Dashboard", icon: <DashboardIcon />, path: "/" },
   { text: "Tasks", icon: <ChecklistIcon />, path: "/tasks" },
   {
     text: "Notifications",
     icon: <NotificationsIcon />,
     path: "/notifications",
   },
-  { text: "Settings", icon: <SettingsIcon /> },
-  { text: "Logout", icon: <LogoutIcon /> },
+  { text: "Settings", icon: <SettingsIcon />, path: "/settings" },
+  { text: "Logout", icon: <LogoutIcon />, path: "/logout" },
 ];
 
 export default function Sidebar() {
@@ -42,7 +43,7 @@ export default function Sidebar() {
 
       <List>
         {navItems.map((item) => (
-          <ListItemButton key={item.text}>
+          <ListItemButton key={item.text} component={Link} to={item.path}>
             <ListItemIcon>{item.icon}</ListItemIcon>
             <ListItemText primary={item.text} />
           </ListItemButton>
