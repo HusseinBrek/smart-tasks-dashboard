@@ -1,17 +1,37 @@
-import { useState } from "react";
-import { Box, Typography, TextField, InputAdornment } from "@mui/material";
+import { useEffect, useState } from "react";
+import {
+  Box,
+  Typography,
+  TextField,
+  InputAdornment,
+  CircularProgress,
+  Alert,
+} from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import TaskItem from "../TaskItem/TaskItem";
 import { Button } from "../../common/Button";
 import { ChildModal } from "../../common/Modal";
 import { TaskForm } from "../TaskForm";
-import { mockTasks } from "../../../data/mockTasks";
+import {
+  getTasks,
+  createTask,
+  updateTask,
+  deleteTask,
+} from "../../../api/tasksService";
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogTitle from "@mui/material/DialogTitle";
 
 export default function TaskList() {
-  const [tasks, setTasks] = useState(mockTasks);
+  const [tasks, setTasks] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [deleteTaskId, setDeleteTaskId] = useState(null);
 
   const handleOpenModal = () => {
     setEditingTask(null);
@@ -28,56 +48,91 @@ export default function TaskList() {
     setEditingTask(null);
   };
 
-  const handleSaveTask = (taskData) => {
-    if (editingTask) {
-      setTasks(
-        tasks.map((task) =>
-          task.id === editingTask.id
-            ? {
-                ...taskData,
-                id: editingTask.id,
-                completed: editingTask.completed,
-              }
-            : task
-        )
+  useEffect(() => {
+    async function fetchTasks() {
+      setIsLoading(true);
+      setError(null);
+      try {
+        const data = await getTasks();
+        setTasks(data.slice().reverse());
+      } catch (err) {
+        setError(
+          `Failed to load tasks. Check if JSON Server is running on port 3001. ${err.message}`
+        );
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchTasks();
+  }, []);
+
+  const handleSaveTask = async (taskData) => {
+    try {
+      if (editingTask) {
+        const updatedTask = await updateTask(editingTask.id, taskData);
+        setTasks(
+          tasks.map((task) => (task.id === editingTask.id ? updatedTask : task))
+        );
+      } else {
+        const newTask = await createTask({ ...taskData, completed: false });
+        setTasks((prevTasks) => [newTask, ...prevTasks]);
+      }
+      handleCloseModal();
+    } catch (err) {
+      setError(`Failed to save task: ${err.message}`);
+    }
+  };
+
+  const handleDeleteTask = async (taskId) => {
+    setDeleteTaskId(taskId);
+  };
+
+  const handleToggleComplete = async (taskId) => {
+    const taskToToggle = tasks.find((t) => t.id === taskId);
+    if (!taskToToggle) return;
+
+    const newStatus = !taskToToggle.completed;
+
+    try {
+      const updatedTask = await updateTask(taskId, { completed: newStatus });
+
+      setTasks((prevTasks) =>
+        prevTasks.map((task) => (task.id === taskId ? updatedTask : task))
       );
-    } else {
-      const newTask = {
-        ...taskData,
-        id: Date.now(),
-        completed: false,
-      };
-      setTasks([newTask, ...tasks]);
+    } catch (err) {
+      setError(`Failed to toggle task status: ${err.message}`);
     }
   };
 
-  // handleDeleteTask
-  const handleDeleteTask = (taskId) => {
-    if (window.confirm("Are you sure you want to delete this task?")) {
-      setTasks(tasks.filter((task) => task.id !== taskId));
-    }
-  };
-
-  const handleToggleComplete = (taskId) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === taskId ? { ...task, completed: !task.completed } : task
-      )
-    );
-  };
-
-  const filteredTasks = tasks.filter(
-    (task) =>
-      task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      task.description.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredTasks = tasks.filter((task) => {
+    const term = searchTerm.toLowerCase();
+    const title = (task.title || "").toLowerCase();
+    const description = (task.description || "").toLowerCase();
+    return title.includes(term) || description.includes(term);
+  });
 
   const pendingTasksCount = tasks.filter((t) => !t.completed).length;
   const completedTasksCount = tasks.filter((t) => t.completed).length;
   const totalTasks = tasks.length;
 
+  const deletingTask = tasks.find((t) => t.id === deleteTaskId);
+
+  if (isLoading) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", p: 4, mt: 5 }}>
+        <CircularProgress />
+        <Typography sx={{ ml: 2 }}>Loading Tasks...</Typography>
+      </Box>
+    );
+  }
+
   return (
     <Box>
+      {error && (
+        <Box sx={{ mb: 2 }}>
+          <Alert severity="error">{error}</Alert>
+        </Box>
+      )}
       <Box
         sx={{
           display: "flex",
@@ -98,11 +153,15 @@ export default function TaskList() {
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         sx={{ mb: 3 }}
-        startAdornment={
-          <InputAdornment position="start">
-            <SearchIcon />
-          </InputAdornment>
-        }
+        slotProps={{
+          input: {
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIcon />
+              </InputAdornment>
+            ),
+          },
+        }}
       />
 
       <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
@@ -153,6 +212,36 @@ export default function TaskList() {
           onSave={handleSaveTask}
         />
       </ChildModal>
+
+      <Dialog
+        open={Boolean(deleteTaskId)}
+        onClose={() => setDeleteTaskId(null)}
+      >
+        <DialogTitle>Delete Task</DialogTitle>
+        <DialogContent>
+          <Typography>
+            Are you sure you want to delete this task
+            {deletingTask?.title ? `: "${deletingTask.title}"` : "?"} ?
+          </Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={() => setDeleteTaskId(null)}>Cancel</Button>
+          <Button
+            color="error"
+            onClick={async () => {
+              try {
+                await deleteTask(deleteTaskId);
+                setTasks((prev) => prev.filter((t) => t.id !== deleteTaskId));
+                setDeleteTaskId(null);
+              } catch (err) {
+                setError(`Failed to delete task: ${err.message}`);
+              }
+            }}
+          >
+            Delete
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Box>
   );
 }

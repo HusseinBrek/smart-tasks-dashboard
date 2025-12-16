@@ -12,17 +12,22 @@ export default function TaskForm({ handleClose, taskToEdit = null, onSave }) {
   };
 
   const [formData, setFormData] = useState(initialData);
+  const [error, setError] = useState({});
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+
+    if (error[name]) {
+      setError((prev) => ({ ...prev, [name]: "" }));
+    }
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
     if (!formData.title.trim()) {
-      alert("Please enter a task title");
+      setError((prev) => ({ ...prev, title: "Please enter a task title" }));
       return;
     }
 
@@ -37,6 +42,8 @@ export default function TaskForm({ handleClose, taskToEdit = null, onSave }) {
     if (handleClose) handleClose();
   };
 
+  const today = new Date().toISOString().split("T")[0];
+
   return (
     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 2 }}>
       <Input
@@ -44,6 +51,8 @@ export default function TaskForm({ handleClose, taskToEdit = null, onSave }) {
         name="title"
         value={formData.title}
         onChange={handleChange}
+        error={error.title}
+        helperText={error.title}
       />
 
       <Input
@@ -73,6 +82,7 @@ export default function TaskForm({ handleClose, taskToEdit = null, onSave }) {
         type="date"
         value={formData.dueDate}
         onChange={handleChange}
+        inputProps={{ min: today }}
       />
 
       <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2, mt: 3 }}>
