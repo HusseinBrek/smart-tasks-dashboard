@@ -6,6 +6,9 @@ import {
   InputAdornment,
   CircularProgress,
   Alert,
+  Tabs,
+  Tab,
+  Paper,
 } from "@mui/material";
 import SearchIcon from "@mui/icons-material/Search";
 import TaskItem from "../TaskItem/TaskItem";
@@ -33,6 +36,8 @@ export default function TaskList() {
   const [editingTask, setEditingTask] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [deleteTaskId, setDeleteTaskId] = useState(null);
+
+  const [filterTab, setFilterTab] = useState("all");
 
   const handleOpenModal = () => {
     setEditingTask(null);
@@ -71,10 +76,16 @@ export default function TaskList() {
   };
 
   const filteredTasks = tasks.filter((task) => {
-    const term = searchTerm.toLowerCase();
-    const title = (task.title || "").toLowerCase();
-    const description = (task.description || "").toLowerCase();
-    return title.includes(term) || description.includes(term);
+    const matchesSearch =
+      task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      task.description.toLowerCase().includes(searchTerm.toLowerCase());
+    if (filterTab === 1) {
+      return matchesSearch && !task.completed;
+    }
+    if (filterTab === 2) {
+      return matchesSearch && task.completed;
+    }
+    return matchesSearch;
   });
 
   const pendingTasksCount = tasks.filter((t) => !t.completed).length;
@@ -112,7 +123,35 @@ export default function TaskList() {
         </Typography>
         <Button onClick={handleOpenModal}>Add New Task</Button>
       </Box>
-
+      <Paper sx={{ mb: 3 }}>
+        <Tabs
+          value={filterTab}
+          onChange={(e, newValue) => setFilterTab(newValue)}
+          variant="fullWidth"
+        >
+          <Tab
+            label={`All (${totalTasks})`}
+            sx={{
+              color: "primary.main",
+              fontWeight: filterTab === 0 ? "bold" : "normal",
+            }}
+          />
+          <Tab
+            label={`Pending ${pendingTasksCount}`}
+            sx={{
+              color: "warning.main",
+              fontWeight: filterTab === 1 ? "bold" : "normal",
+            }}
+          />
+          <Tab
+            label={`Completed (${completedTasksCount})`}
+            sx={{
+              color: "success.main",
+              fontWeight: filterTab === 2 ? "bold" : "normal",
+            }}
+          />
+        </Tabs>
+      </Paper>
       <TextField
         fullWidth
         placeholder="Search tasks..."
@@ -130,7 +169,7 @@ export default function TaskList() {
         }}
       />
 
-      <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
+      {/* <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
         <Typography variant="body2" color="primary">
           Total: {totalTasks}
         </Typography>
@@ -140,7 +179,7 @@ export default function TaskList() {
         <Typography variant="body2" color="warning.main">
           Pending: {pendingTasksCount}
         </Typography>
-      </Box>
+      </Box> */}
 
       <Box>
         {filteredTasks.length === 0 ? (

@@ -2,9 +2,9 @@ import axios from "axios";
 
 const API_URL = "http://localhost:3001";
 
-export async function getTasks() {
+export async function getTasksByUserId(userId) {
   try {
-    const response = await axios.get(`${API_URL}/tasks`);
+    const response = await axios.get(`${API_URL}/tasks?userId=${userId}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching tasks:", error);

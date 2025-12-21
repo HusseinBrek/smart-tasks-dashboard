@@ -5,13 +5,15 @@ import {
   ListItemText,
   ListItemIcon,
   ListItemButton,
+  Divider,
 } from "@mui/material";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import SettingsIcon from "@mui/icons-material/Settings";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ChecklistIcon from "@mui/icons-material/Checklist";
 import NotificationsIcon from "@mui/icons-material/Notifications";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/AuthContext";
 
 const navItems = [
   { text: "Dashboard", icon: <DashboardIcon />, path: "/" },
@@ -22,11 +24,17 @@ const navItems = [
     path: "/notifications",
   },
   { text: "Settings", icon: <SettingsIcon />, path: "/settings" },
-  { text: "Logout", icon: <LogoutIcon />, path: "/logout" },
 ];
 
 export default function Sidebar() {
   const drawerWidth = 240;
+  const { logout } = useAuth();
+  const navigate = useNavigate();
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
   return (
     <Drawer
       variant="permanent"
@@ -48,6 +56,15 @@ export default function Sidebar() {
             <ListItemText primary={item.text} />
           </ListItemButton>
         ))}
+      </List>
+      <Divider />
+      <List>
+        <ListItemButton onClick={handleLogout} sx={{ color: "error.main" }}>
+          <ListItemIcon sx={{ color: "error.main" }}>
+            <LogoutIcon />
+          </ListItemIcon>
+          <ListItemText primary="Logout" />
+        </ListItemButton>
       </List>
     </Drawer>
   );

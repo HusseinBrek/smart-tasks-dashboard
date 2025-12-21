@@ -1,7 +1,22 @@
 {
+  "users": [
+    {
+      "id": "1",
+      "name": "Admin",
+      "email": "admin@tasks.com",
+      "password": "123"
+    },
+    {
+      "id": "2",
+      "name": "User",
+      "email": "user@tasks.com",
+      "password": "123"
+    }
+  ],
   "tasks": [
     {
       "id": "1",
+      "userId": "1",
       "title": "Task 1",
       "description": "This is the first task",
       "priority": "high",
@@ -10,6 +25,7 @@
     },
     {
       "id": "2",
+      "userId": "2",
       "title": "Task 2",
       "description": "This is the second task",
       "priority": "medium",
@@ -18,6 +34,7 @@
     },
     {
       "id": "3",
+      "userId": "2",
       "title": "Task 3",
       "description": "This is the third task",
       "priority": "low",
@@ -26,6 +43,7 @@
     },
     {
       "id": "4",
+      "userId": "1",
       "title": "Task 4",
       "description": "This is the fourth task",
       "priority": "high",
@@ -34,10 +52,47 @@
     },
     {
       "id": "5",
+      "userId": "2",
       "title": "Task 5",
       "description": "This is the fifth task",
       "priority": "low",
       "dueDate": "2023-04-05",
+      "completed": true
+    },
+    {
+      "id": "715e",
+      "userId": "1",
+      "title": "test2",
+      "description": "",
+      "dueDate": "",
+      "priority": "medium",
+      "completed": true
+    },
+    {
+      "id": "1f1c",
+      "title": "admin",
+      "description": "hello",
+      "dueDate": "2025-12-27",
+      "priority": "medium",
+      "userId": "1",
+      "completed": false
+    },
+    {
+      "id": "f368",
+      "title": "user",
+      "description": "hello",
+      "dueDate": "2025-12-20",
+      "priority": "high",
+      "userId": "2",
+      "completed": false
+    },
+    {
+      "id": "7e8d",
+      "title": "1",
+      "description": "1",
+      "dueDate": "2025-12-19",
+      "priority": "high",
+      "userId": "1",
       "completed": false
     }
   ]
