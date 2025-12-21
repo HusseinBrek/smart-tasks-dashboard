@@ -24,6 +24,9 @@ import { useTasks } from "../../../context/TasksContext";
 export default function TaskList() {
   const {
     tasks,
+    filteredTasks,
+    searchTerm,
+    setSearchTerm,
     isLoading,
     error,
     toggleTaskCompletion,
@@ -34,7 +37,6 @@ export default function TaskList() {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
-  const [searchTerm, setSearchTerm] = useState("");
   const [deleteTaskId, setDeleteTaskId] = useState(null);
 
   const [filterTab, setFilterTab] = useState("all");
@@ -75,17 +77,14 @@ export default function TaskList() {
     }
   };
 
-  const filteredTasks = tasks.filter((task) => {
-    const matchesSearch =
-      task.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      task.description.toLowerCase().includes(searchTerm.toLowerCase());
+  const displayedTasks = filteredTasks.filter((task) => {
     if (filterTab === 1) {
-      return matchesSearch && !task.completed;
+      return !task.completed;
     }
     if (filterTab === 2) {
-      return matchesSearch && task.completed;
+      return task.completed;
     }
-    return matchesSearch;
+    return true;
   });
 
   const pendingTasksCount = tasks.filter((t) => !t.completed).length;
@@ -169,20 +168,8 @@ export default function TaskList() {
         }}
       />
 
-      {/* <Box sx={{ display: "flex", gap: 2, mb: 3 }}>
-        <Typography variant="body2" color="primary">
-          Total: {totalTasks}
-        </Typography>
-        <Typography variant="body2" color="success.main">
-          Completed: {completedTasksCount}
-        </Typography>
-        <Typography variant="body2" color="warning.main">
-          Pending: {pendingTasksCount}
-        </Typography>
-      </Box> */}
-
       <Box>
-        {filteredTasks.length === 0 ? (
+        {displayedTasks.length === 0 ? (
           <Typography
             variant="body1"
             color="text.secondary"
@@ -194,7 +181,7 @@ export default function TaskList() {
               : "No tasks available. Add your first task!"}
           </Typography>
         ) : (
-          filteredTasks.map((task) => (
+          displayedTasks.map((task) => (
             <TaskItem
               key={task.id}
               task={task}

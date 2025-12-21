@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { TasksContext } from "./TasksContext";
 import {
   getTasksByUserId,
@@ -13,8 +13,19 @@ export const TasksProvider = ({ children }) => {
   const [tasks, setTasks] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   const { user } = useAuth();
+
+  const filteredTasks = useMemo(() => {
+    const term = searchTerm.trim().toLowerCase();
+    if (!term) return tasks;
+    return tasks.filter((task) => {
+      const title = (task.title || "").toLowerCase();
+      const desc = (task.description || "").toLowerCase();
+      return title.includes(term) || desc.includes(term);
+    });
+  }, [tasks, searchTerm]);
 
   const fetchTask = useCallback(async () => {
     if (!user) {
@@ -92,6 +103,9 @@ export const TasksProvider = ({ children }) => {
   };
   const contextValue = {
     tasks,
+    filteredTasks,
+    searchTerm,
+    setSearchTerm,
     addNewTask,
     editTask,
     deleteTask,
