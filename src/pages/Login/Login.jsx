@@ -40,7 +40,7 @@ export default function Login() {
     if (validate()) {
       const success = await login(email, password);
       if (success) {
-        navigate("/");
+        navigate("/dashboard");
       }
     }
   };
@@ -105,7 +105,11 @@ export default function Login() {
             <Box sx={{ textAlign: "center", mt: 2 }}>
               <Typography variant="body2">
                 Don't have an account?{" "}
-                <Link href="#" underline="hover" sx={{ fontWeight: "bold" }}>
+                <Link
+                  href="/register"
+                  underline="hover"
+                  sx={{ fontWeight: "bold" }}
+                >
                   Register here
                 </Link>
               </Typography>

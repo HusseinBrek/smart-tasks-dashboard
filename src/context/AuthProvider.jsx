@@ -4,11 +4,15 @@ import { toast } from "react-hot-toast";
 import { useState } from "react";
 
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+  const [user, setUser] = useState(() => {
+    const storedUser = localStorage.getItem("user");
+    return storedUser ? JSON.parse(storedUser) : null;
+  });
 
   const login = async (email, password) => {
     try {
       const userData = await loginUser(email, password);
+      localStorage.setItem("user", JSON.stringify(userData));
       setUser(userData);
       toast.success(`Welcome back, ${userData.name}!`);
       return true;
@@ -21,6 +25,7 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       const newUser = await registerUser(userData);
+      localStorage.setItem("user", JSON.stringify(newUser));
       setUser(newUser);
       toast.success(`Welcome, ${newUser.name}!`);
       return true;
@@ -32,6 +37,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   const logout = () => {
+    localStorage.removeItem("user");
     setUser(null);
     toast.success("Logged out successfully");
     window.location.href = "/login";

@@ -8,6 +8,7 @@ import { TasksProvider } from "./context/TasksProvider";
 import { AuthProvider } from "./context/AuthProvider";
 import { Login } from "./pages/Login";
 import { Toaster } from "react-hot-toast";
+import { Register } from "./pages/Register";
 
 const theme = createTheme({});
 
@@ -19,10 +20,12 @@ function App() {
         <TasksProvider>
           <Routes>
             <Route path="/" element={<Layout />}>
-              <Route index element={<Dashboard />} />
+              <Route index element={<Login />} />
               <Route path="tasks" element={<Tasks />} />
               <Route path="settings" element={<Settings />} />
               <Route path="login" element={<Login />} />
+              <Route path="register" element={<Register />} />
+              <Route path="dashboard" element={<Dashboard />} />
             </Route>
           </Routes>
         </TasksProvider>
