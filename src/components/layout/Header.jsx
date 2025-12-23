@@ -5,9 +5,14 @@ import Box from "@mui/material/Box";
 import { Button } from "../common/Button";
 import { Link as RouterLink } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
+import { useColorMode } from "../../theme/ThemeContext";
+import { Brightness4, Brightness7 } from "@mui/icons-material";
+import { useTheme } from "@mui/material/styles";
 
 export default function Header() {
   const { user } = useAuth();
+  const { toggleColorMode } = useColorMode();
+  const theme = useTheme();
   return (
     <AppBar
       position="fixed"
@@ -28,6 +33,9 @@ export default function Header() {
         </Typography>
 
         <Box sx={{ flexGrow: 1 }} />
+        <IconButton color="inherit" onClick={toggleColorMode} sx={{ mr: 2 }}>
+          {theme.palette.mode === "dark" ? <Brightness7 /> : <Brightness4 />}
+        </IconButton>
 
         {user ? (
           <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>

@@ -5,8 +5,10 @@ import DoneAllIcon from "@mui/icons-material/DoneAll";
 import PendingIcon from "@mui/icons-material/Pending";
 import { BasicCard } from "../../components/common/Card";
 import { useTasks } from "../../context/TasksContext";
+import { useTheme } from "@mui/material/styles";
 
 export default function Dashboard() {
+  const theme = useTheme();
   const { tasks, isLoading, error } = useTasks();
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter((t) => t.completed).length;
@@ -25,38 +27,56 @@ export default function Dashboard() {
     (t) => t.priority === "high" && !t.completed
   ).length;
 
+  const isDarkMode = theme.palette.mode === "dark";
+
   const stats = [
     {
       title: "Total Tasks",
       value: totalTasks,
       icon: <ChecklistIcon />,
-      color: "#1976d2",
-      bgcolor: "#e3f2fd",
-      iconColor: "#1976d2",
+      color: isDarkMode
+        ? theme.palette.primary.light
+        : theme.palette.primary.main,
+      bgcolor: isDarkMode
+        ? "rgba(25, 118, 210, 0.2)"
+        : "rgba(25, 118, 210, 0.2)",
+      iconColor: isDarkMode
+        ? theme.palette.primary.light
+        : theme.palette.primary.main,
     },
     {
       title: "Completed",
       value: completedTasks,
       icon: <DoneAllIcon />,
-      color: "#2e7d32",
-      bgcolor: "#e8f5e9",
-      iconColor: "#2e7d32",
+      color: isDarkMode
+        ? theme.palette.success.light
+        : theme.palette.success.main,
+      bgcolor: isDarkMode ? "rgba(46, 125, 50, 0.2)" : "rgba(46, 125, 50, 0.2)",
+      iconColor: isDarkMode
+        ? theme.palette.success.light
+        : theme.palette.success.main,
     },
     {
       title: "Pending",
       value: pendingTasks,
       icon: <PendingIcon />,
-      color: "#ed6c02",
-      bgcolor: "#fff3e0",
-      iconColor: "#ed6c02",
+      color: isDarkMode
+        ? theme.palette.warning.light
+        : theme.palette.warning.main,
+      bgcolor: isDarkMode ? "rgba(237, 108, 2, 0.2)" : "rgba(237, 108, 2, 0.2)",
+      iconColor: isDarkMode
+        ? theme.palette.warning.light
+        : theme.palette.warning.main,
     },
     {
       title: "High Priority",
       value: highPriorityTasks,
       icon: <ChecklistIcon />,
-      color: "#d32f2f",
-      bgcolor: "#ffebee",
-      iconColor: "#d32f2f",
+      color: isDarkMode ? theme.palette.error.light : theme.palette.error.main,
+      bgcolor: isDarkMode ? "rgba(211, 47, 47, 0.2)" : "rgba(211, 47, 47, 0.2)",
+      iconColor: isDarkMode
+        ? theme.palette.error.light
+        : theme.palette.error.main,
     },
   ];
 
@@ -69,7 +89,7 @@ export default function Dashboard() {
       {/* Statistics Cards */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         {stats.map((stat, index) => (
-          <Grid item size={{ xs: 12, sm: 6, md: 3 }} key={index}>
+          <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
             <Paper
               sx={{
                 p: 3,
@@ -128,7 +148,7 @@ export default function Dashboard() {
 
       {/* Main Content */}
       <Grid container spacing={3}>
-        <Grid item size={{ xs: 12, sm: 6, md: 12 }}>
+        <Grid size={{ xs: 12, sm: 6, md: 12 }}>
           <BasicCard title="Recent Tasks" sx={{ height: "100%" }}>
             <Typography
               variant="body2"
