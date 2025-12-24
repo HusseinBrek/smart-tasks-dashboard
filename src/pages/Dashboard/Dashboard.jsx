@@ -89,7 +89,7 @@ export default function Dashboard() {
       {/* Statistics Cards */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
         {stats.map((stat, index) => (
-          <Grid size={{ xs: 12, sm: 6, md: 3 }} key={index}>
+          <Grid item xs={12} sm={6} md={3} key={index}>
             <Paper
               sx={{
                 p: 3,
@@ -148,7 +148,7 @@ export default function Dashboard() {
 
       {/* Main Content */}
       <Grid container spacing={3}>
-        <Grid size={{ xs: 12, sm: 6, md: 12 }}>
+        <Grid item xs={12} md={12}>
           <BasicCard title="Recent Tasks" sx={{ height: "100%" }}>
             <Typography
               variant="body2"

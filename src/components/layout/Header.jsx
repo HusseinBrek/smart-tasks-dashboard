@@ -8,26 +8,31 @@ import { useAuth } from "../../context/AuthContext";
 import { useColorMode } from "../../theme/ThemeContext";
 import { Brightness4, Brightness7 } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import Tooltip from "@mui/material/Tooltip";
 
-export default function Header() {
+export default function Header({ handleDrawerToggle }) {
   const { user } = useAuth();
   const { toggleColorMode } = useColorMode();
   const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   return (
     <AppBar
       position="fixed"
       sx={{ zIndex: (theme) => theme.zIndex.drawer + 1 }}
     >
       <Toolbar>
-        <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          edge="start"
-          sx={{ mr: 2 }}
-        >
-          <MenuIcon />
-        </IconButton>
+        {isMobile && (
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            sx={{ mr: 2 }}
+            onClick={handleDrawerToggle}
+          >
+            <MenuIcon />
+          </IconButton>
+        )}
 
         <Typography variant="h6" noWrap component="div">
           Smart Tasks Dashboard
