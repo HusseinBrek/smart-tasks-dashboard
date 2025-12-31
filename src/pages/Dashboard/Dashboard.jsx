@@ -4,23 +4,28 @@ import ChecklistIcon from "@mui/icons-material/Checklist";
 import DoneAllIcon from "@mui/icons-material/DoneAll";
 import PendingIcon from "@mui/icons-material/Pending";
 import { BasicCard } from "../../components/common/Card";
-import { useTasks } from "../../context/TasksContext";
 import { useTheme } from "@mui/material/styles";
+import { useSelector } from "react-redux";
+import {
+  selectTasks,
+  selectTasksStatus,
+  selectTasksError,
+} from "../../features/tasks/tasksSlice";
 
 export default function Dashboard() {
   const theme = useTheme();
-  const { tasks, isLoading, error } = useTasks();
+  const tasks = useSelector(selectTasks);
+  const status = useSelector(selectTasksStatus);
+  const error = useSelector(selectTasksError);
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter((t) => t.completed).length;
   const pendingTasks = totalTasks - completedTasks;
 
-  if (isLoading) {
+  if (status === "loading") {
     return <div>Loading...</div>;
   }
-  if (error) {
-    return (
-      <div>Error: {typeof error === "string" ? error : error.message}</div>
-    );
+  if (status === "error") {
+    return <div>Error: {error.message}</div>;
   }
 
   const highPriorityTasks = tasks.filter(

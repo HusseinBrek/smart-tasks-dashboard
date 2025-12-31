@@ -15,15 +15,6 @@
   ],
   "tasks": [
     {
-      "id": "1",
-      "userId": "1",
-      "title": "Task 1",
-      "description": "This is the first task",
-      "priority": "high",
-      "dueDate": "2023-04-01",
-      "completed": false
-    },
-    {
       "id": "2",
       "userId": "2",
       "title": "Task 2",
@@ -60,15 +51,6 @@
       "completed": true
     },
     {
-      "id": "715e",
-      "userId": "1",
-      "title": "test2",
-      "description": "",
-      "dueDate": "",
-      "priority": "medium",
-      "completed": true
-    },
-    {
       "id": "1f1c",
       "title": "admin",
       "description": "hello",
@@ -84,15 +66,6 @@
       "dueDate": "2025-12-20",
       "priority": "high",
       "userId": "2",
-      "completed": false
-    },
-    {
-      "id": "7e8d",
-      "title": "12",
-      "description": "1",
-      "dueDate": "2025-12-23",
-      "priority": "high",
-      "userId": "1",
       "completed": false
     }
   ]
