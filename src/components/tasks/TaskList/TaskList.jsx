@@ -88,8 +88,6 @@ export default function TaskList() {
   };
 
   const handleDeleteTask = async (taskId) => {
-    console.log("deleteTaskId type:", typeof deleteTaskId, deleteTaskId);
-    console.log("first item id type:", typeof tasks[0]?.id, tasks[0]?.id);
     setDeleteTaskId(taskId);
   };
 
@@ -252,12 +250,6 @@ export default function TaskList() {
             color="error"
             onClick={async () => {
               try {
-                console.log(
-                  "Confirm delete. deleteTaskId:",
-                  deleteTaskId,
-                  typeof deleteTaskId
-                );
-
                 await dispatch(deleteTask(deleteTaskId)).unwrap();
                 toast.success("Task deleted successfully!");
                 setDeleteTaskId(null);
