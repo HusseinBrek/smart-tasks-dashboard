@@ -51,7 +51,7 @@ export default function TaskList() {
   const [editingTask, setEditingTask] = useState(null);
   const [deleteTaskId, setDeleteTaskId] = useState(null);
 
-  const [filterTab, setFilterTab] = useState("all");
+  const [filterTab, setFilterTab] = useState(0);
 
   const handleOpenModal = () => {
     setEditingTask(null);
@@ -74,7 +74,7 @@ export default function TaskList() {
     try {
       if (editingTask) {
         await dispatch(
-          updateTask({ taskId: editingTask.id, updatedData: taskData })
+          updateTask({ taskId: editingTask.id, updatedTask: taskData })
         ).unwrap();
         toast.success("Task updated successfully!");
       } else {

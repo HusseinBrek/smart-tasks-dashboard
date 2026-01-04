@@ -156,7 +156,8 @@ const tasksSlice = createSlice({
       })
 
       .addCase(deleteTask.fulfilled, (state, action) => {
-        state.items = state.items.filter((t) => t.id !== action.payload.id);
+        const deletedId = action.payload;
+        state.items = state.items.filter((t) => t.id !== deletedId);
       })
       .addCase(deleteTask.rejected, (state, action) => {
         state.error = action.payload || "Failed to delete task.";
