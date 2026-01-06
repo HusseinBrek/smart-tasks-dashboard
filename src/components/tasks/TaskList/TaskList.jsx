@@ -19,27 +19,39 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
-import { useTasks } from "../../../context/TasksContext";
+import {
+  createTask,
+  updateTask,
+  deleteTask,
+  toggleTaskCompletion,
+  setSearchTerm,
+  selectTasks,
+  selectFilteredTasks,
+  selectSearchTerm,
+  selectTasksStatus,
+  selectTasksError,
+} from "../../../features/tasks/tasksSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { useAuth } from "../../../context/AuthContext";
+import { toast } from "react-hot-toast";
 
 export default function TaskList() {
-  const {
-    tasks,
-    filteredTasks,
-    searchTerm,
-    setSearchTerm,
-    isLoading,
-    error,
-    toggleTaskCompletion,
-    deleteTask,
-    addNewTask,
-    editTask,
-  } = useTasks();
+  const dispatch = useDispatch();
+  const { user } = useAuth();
+
+  const tasks = useSelector(selectTasks);
+  const filteredTasks = useSelector(selectFilteredTasks);
+  const searchTerm = useSelector(selectSearchTerm);
+  const status = useSelector(selectTasksStatus);
+  const error = useSelector(selectTasksError);
+
+  const isLoading = status === "loading";
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState(null);
   const [deleteTaskId, setDeleteTaskId] = useState(null);
 
-  const [filterTab, setFilterTab] = useState("all");
+  const [filterTab, setFilterTab] = useState(0);
 
   const handleOpenModal = () => {
     setEditingTask(null);
@@ -57,12 +69,21 @@ export default function TaskList() {
   };
 
   const handleSaveTask = async (taskData) => {
-    const success = editingTask
-      ? await editTask(editingTask.id, taskData)
-      : await addNewTask(taskData);
+    if (!user) return;
 
-    if (success) {
+    try {
+      if (editingTask) {
+        await dispatch(
+          updateTask({ taskId: editingTask.id, updatedTask: taskData })
+        ).unwrap();
+        toast.success("Task updated successfully!");
+      } else {
+        await dispatch(createTask({ userId: user.id, taskData })).unwrap();
+        toast.success("Task added to your list!");
+      }
       handleCloseModal();
+    } catch (msg) {
+      toast.error(typeof msg === "string" ? msg : "Operation failed.");
     }
   };
 
@@ -72,8 +93,15 @@ export default function TaskList() {
 
   const handleToggleComplete = async (taskId) => {
     const taskToToggle = tasks.find((t) => t.id === taskId);
-    if (taskToToggle) {
-      await toggleTaskCompletion(taskId, taskToToggle.completed);
+    if (!taskToToggle) return;
+
+    try {
+      await dispatch(
+        toggleTaskCompletion({ taskId, currentStatus: taskToToggle.completed })
+      ).unwrap();
+      toast.success("Task updated successfully!");
+    } catch (msg) {
+      toast.error(typeof msg === "string" ? msg : "Failed to toggle.");
     }
   };
 
@@ -155,7 +183,7 @@ export default function TaskList() {
         fullWidth
         placeholder="Search tasks..."
         value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
+        onChange={(e) => dispatch(setSearchTerm(e.target.value))}
         sx={{ mb: 3 }}
         slotProps={{
           input: {
@@ -221,11 +249,13 @@ export default function TaskList() {
           <Button
             color="error"
             onClick={async () => {
-              const success = await deleteTask(deleteTaskId);
-              if (success) {
+              try {
+                await dispatch(deleteTask(deleteTaskId)).unwrap();
+                toast.success("Task deleted successfully!");
                 setDeleteTaskId(null);
-              } else {
-                console.error("Error deleting task");
+              } catch (error) {
+                console.error("Error deleting task:", error);
+                toast.error("Failed to delete task.");
               }
             }}
           >

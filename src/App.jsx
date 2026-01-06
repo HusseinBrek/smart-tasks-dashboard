@@ -13,6 +13,7 @@ import AppThemeProvider from "./theme/AppThemeProvider";
 import ForgotPassword from "./pages/auth/ForgotPassword";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { Navigate } from "react-router-dom";
+import FetchTasks from "./features/tasks/FetchTasks";
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
       <CssBaseline />
       <AuthProvider>
         <TasksProvider>
+          <FetchTasks />
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
