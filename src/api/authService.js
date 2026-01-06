@@ -1,36 +1,62 @@
-import axios from "axios";
-const API_URL = "http://localhost:3001";
+import { request } from "./apiClient";
 
 export async function loginUser(email, password) {
-  const response = await axios.get(
-    `${API_URL}/users?email=${email}&password=${password}`
-  );
-  if (response.data.length > 0) {
-    return response.data[0];
+  const users = await request({
+    method: "GET",
+    url: `/users?email=${encodeURIComponent(
+      email
+    )}&password=${encodeURIComponent(password)}`,
+  });
+
+  if (Array.isArray(users) && users.length > 0) {
+    return users[0];
   }
-  throw new Error("Invalid email or password");
+
+  const err = new Error("Invalid email or password");
+  err.response = {
+    status: 400,
+    data: { message: "Invalid email or password" },
+  };
+  throw err;
 }
 
 export async function registerUser(userData) {
-  const checkUser = await axios.get(`${API_URL}/users?email=${userData.email}`);
-  if (checkUser.data.length > 0) {
-    throw new Error("User already registered!");
+  const existing = await request({
+    method: "GET",
+    url: `/users?email=${encodeURIComponent(userData.email)}`,
+  });
+
+  if (Array.isArray(existing) && existing.length > 0) {
+    const err = new Error("User already registered!");
+    err.response = {
+      status: 422,
+      data: { message: "User already registered!" },
+    };
+    throw err;
   }
-  const response = await axios.post(`${API_URL}/users`, userData);
-  return response.data;
+
+  return request({
+    method: "POST",
+    url: "/users",
+    data: userData,
+  });
 }
 
 export const findUserByEmail = async (email) => {
-  const response = await fetch(`${API_URL}/users?email=${email}`);
-  const users = await response.json();
-  return users.length > 0 ? users[0] : null;
+  const users = await request({
+    method: "GET",
+    url: `/users?email=${encodeURIComponent(email)}`,
+  });
+
+  return Array.isArray(users) && users.length > 0 ? users[0] : null;
 };
 
 export const updatePassword = async (userId, newPassword) => {
-  const response = await fetch(`${API_URL}/users/${userId}`, {
+  const updated = await request({
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ password: newPassword }),
+    url: `/users/${userId}`,
+    data: { password: newPassword },
   });
-  return response.ok;
+
+  return !!updated;
 };
