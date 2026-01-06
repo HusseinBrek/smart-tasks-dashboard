@@ -1,36 +1,60 @@
-import axios from "axios";
+import { request } from "./apiClient";
 const API_URL = "http://localhost:3001";
 
 export async function loginUser(email, password) {
-  const response = await axios.get(
-    `${API_URL}/users?email=${email}&password=${password}`
-  );
-  if (response.data.length > 0) {
+  const response = await request({
+    method: "GET",
+    url: `/users?email=${encodeURIComponent(
+      email
+    )}&password=${encodeURIComponent(password)}`,
+  });
+  if (Array.isArray(response.data) && response.data.length > 0) {
     return response.data[0];
   }
-  throw new Error("Invalid email or password");
+  const err = new Error("Invalid email or password");
+  err.response = {
+    status: 400,
+    data: { message: "Invalid email or password" },
+  };
+  throw err;
 }
 
 export async function registerUser(userData) {
-  const checkUser = await axios.get(`${API_URL}/users?email=${userData.email}`);
-  if (checkUser.data.length > 0) {
-    throw new Error("User already registered!");
+  const checkUser = await request({
+    method: "GET",
+    url: `/users?email=${encodeURIComponent(userData.email)}`,
+  });
+  if (Array.isArray(checkUser.data) && checkUser.data.length > 0) {
+    const err = new Error("User already registered!");
+    err.response = {
+      status: 422,
+      data: { message: "User already registered!" },
+    };
+    throw err;
   }
-  const response = await axios.post(`${API_URL}/users`, userData);
-  return response.data;
+  return request({
+    method: "POST",
+    url: "/users",
+    data: userData,
+  });
 }
 
 export const findUserByEmail = async (email) => {
-  const response = await fetch(`${API_URL}/users?email=${email}`);
-  const users = await response.json();
-  return users.length > 0 ? users[0] : null;
+  const response = await request({
+    method: "GET",
+    url: `/users?email=${encodeURIComponent(email)}`,
+  });
+
+  return Array.isArray(response.data) && response.data.length > 0
+    ? response.data[0]
+    : null;
 };
 
 export const updatePassword = async (userId, newPassword) => {
-  const response = await fetch(`${API_URL}/users/${userId}`, {
+  const response = await request({
     method: "PATCH",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ password: newPassword }),
+    url: `/users/${userId}`,
+    data: { password: newPassword },
   });
-  return response.ok;
+  return !!response.data;
 };

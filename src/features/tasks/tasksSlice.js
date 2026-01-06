@@ -13,11 +13,7 @@ export const fetchTasksByUser = createAsyncThunk(
       const data = await getTasksByUserId(userId);
       return data;
     } catch (err) {
-      const message =
-        err?.response?.data?.message ||
-        err?.message ||
-        "Failed to fetch tasks from the server.";
-      return thunkApi.rejectWithValue(message);
+      return thunkApi.rejectWithValue(err?.message || "Failed to fetch tasks.");
     }
   }
 );
@@ -34,11 +30,9 @@ export const createTask = createAsyncThunk(
       const created = await createTaskApi(payload);
       return created;
     } catch (err) {
-      const message =
-        err?.response?.data?.message ||
-        err?.message ||
-        "Failed to add new task.";
-      return thunkApi.rejectWithValue(message);
+      return thunkApi.rejectWithValue(
+        err?.message || "Failed to add new task."
+      );
     }
   }
 );
@@ -50,11 +44,7 @@ export const updateTask = createAsyncThunk(
       const updated = await updateTaskApi(taskId, updatedTask);
       return updated;
     } catch (err) {
-      const message =
-        err?.response?.data?.message ||
-        err?.message ||
-        "Failed to update task.";
-      return thunkApi.rejectWithValue(message);
+      return thunkApi.rejectWithValue(err?.message || "Failed to update task.");
     }
   }
 );
@@ -66,11 +56,7 @@ export const deleteTask = createAsyncThunk(
       await deleteTaskApi(taskId);
       return taskId;
     } catch (err) {
-      const message =
-        err?.response?.data?.message ||
-        err?.message ||
-        "Failed to delete task.";
-      return thunkApi.rejectWithValue(message);
+      return thunkApi.rejectWithValue(err?.message || "Failed to delete task.");
     }
   }
 );
@@ -84,11 +70,9 @@ export const toggleTaskCompletion = createAsyncThunk(
       });
       return updated;
     } catch (err) {
-      const message =
-        err?.response?.data?.message ||
-        err?.message ||
-        "Failed to toggle task completion.";
-      return thunkApi.rejectWithValue(message);
+      return thunkApi.rejectWithValue(
+        err?.message || "Failed to toggle task completion."
+      );
     }
   }
 );
